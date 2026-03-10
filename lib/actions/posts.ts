@@ -2,6 +2,22 @@
 
 import { prisma } from "@/lib/prisma";
 
+export type PostWithCategory = {
+  id: number;
+  title: string;
+  content: string;
+  categoryId: number | null;
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+    createdAt: Date;
+  } | null;
+};
+
 export async function createPost(formData: FormData) {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
@@ -29,7 +45,7 @@ export async function createPost(formData: FormData) {
   };
 }
 
-export async function getPostsByCategory(categorySlug: string) {
+export async function getPostsByCategory(categorySlug: string): Promise<PostWithCategory[]> {
   return prisma.post.findMany({
     where: {
       category: { slug: categorySlug },
@@ -40,7 +56,7 @@ export async function getPostsByCategory(categorySlug: string) {
   });
 }
 
-export async function getPostById(id: number) {
+export async function getPostById(id: number): Promise<PostWithCategory | null> {
   return prisma.post.findUnique({
     where: { id },
     include: { category: true },
