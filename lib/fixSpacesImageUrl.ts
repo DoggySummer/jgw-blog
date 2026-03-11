@@ -2,8 +2,8 @@
  * 경로에 버킷 이름이 중복된 Spaces URL을 올바른 형식으로 고칩니다.
  * 예: .../frontend-blog/uploads/... → .../uploads/...
  */
-export function fixSpacesImageUrl(src: string | undefined): string {
-  if (!src || typeof src !== "string") return src ?? "";
+export function fixSpacesImageUrl(src: unknown): string | undefined {
+  if (typeof src !== "string" || !src) return undefined;
   try {
     const url = new URL(src);
     const host = url.hostname;
