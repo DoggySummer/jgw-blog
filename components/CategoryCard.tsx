@@ -5,6 +5,7 @@ import { getCategoryColors } from "@/lib/categories";
 export default function CategoryCard({ category }: { category: CategoryInfo }) {
   const colors = getCategoryColors(category.slug);
   const Icon = category.icon;
+  console.log('');
 
   return (
     <Link
