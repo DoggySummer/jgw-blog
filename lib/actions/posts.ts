@@ -58,6 +58,28 @@ export async function getPostsByCategory(categorySlug: string): Promise<PostWith
   });
 }
 
+export async function getPostsByCategoryPage(categorySlug: string, page: number, pageSize: number) {
+  const safePage = Number.isFinite(page) && page > 0 ? Math.floor(page) : 1;
+  const safeSize = Number.isFinite(pageSize) && pageSize > 0 ? Math.floor(pageSize) : 5;
+  const where = {
+    category: { slug: categorySlug },
+    published: true,
+  } as const;
+
+  const [total, posts] = await Promise.all([
+    prisma.post.count({ where }),
+    prisma.post.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      include: { category: true },
+      skip: (safePage - 1) * safeSize,
+      take: safeSize,
+    }),
+  ]);
+
+  return { total, posts, page: safePage, pageSize: safeSize };
+}
+
 export async function getPostById(id: number): Promise<PostWithCategory | null> {
   return prisma.post.findUnique({
     where: { id },
