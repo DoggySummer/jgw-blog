@@ -1,70 +1,11 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@font-face {
-  font-family: "Jalnan2";
-  src: url("/font/Jalnan2TTF.ttf") format("truetype");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-1Thin.ttf") format("truetype");
-  font-weight: 100;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-2ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-3Light.ttf") format("truetype");
-  font-weight: 300;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-4Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-5Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-6SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-7Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-8ExtraBold.ttf") format("truetype");
-  font-weight: 800;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Paperlogy";
-  src: url("/font/Paperlogy-9Black.ttf") format("truetype");
-  font-weight: 900;
-  font-display: swap;
-}
+/* 폰트는 layout.tsx의 next/font/local(paperlogy, jalnan2)로 로드됨 */
 
 .prose h1,
 .prose h2 {
-  font-family: "Jalnan2", sans-serif !important;
+  font-family: var(--font-jalnan2), sans-serif !important;
 }
 
 /* H1: 한 줄로 이어지는 밑줄 — 글자 너비만큼 빨강, 나머지 회색 */
@@ -91,7 +32,7 @@
 }
 
 .prose {
-  font-family: "Paperlogy", sans-serif;
+  font-family: var(--font-paperlogy), sans-serif;
 }
 
 .prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
@@ -103,7 +44,7 @@
 }
 
 body {
-  font-family: "Paperlogy", sans-serif;
+  font-family: var(--font-paperlogy), sans-serif;
   color: #1a1a1a;
   background: #ffffff;
 }

@@ -83,13 +83,15 @@ export default async function CategoryPage({
 
                   {/* Right: thumbnail placeholder */}
                   <div className="w-full">
-                    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-black">
+                    <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-gray-200">
                       {category === "til" ? (
                         <Image
                           src="/image/til.png"
                           alt="TIL"
                           fill
                           priority={page === 1}
+                          placeholder="blur"
+                          blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM4YzhjOGMiLz48L3N2Zz4="
                           className="object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                           style={{ objectPosition: "50% 30%" }}
                         />
