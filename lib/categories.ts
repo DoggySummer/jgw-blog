@@ -9,6 +9,22 @@ export type CategoryInfo = {
   icon: IconType;
 };
 
+export const CATEGORY_COLORS: Record<string, { badge: string; icon: string; hover: string }> = {
+  js:               { badge: "bg-yellow-100 text-yellow-700", icon: "text-yellow-500", hover: "group-hover:text-yellow-600" },
+  react:            { badge: "bg-sky-100 text-sky-700",       icon: "text-sky-500",    hover: "group-hover:text-sky-600" },
+  cs:               { badge: "bg-green-100 text-green-700",   icon: "text-green-500",  hover: "group-hover:text-green-600" },
+  retrospect:       { badge: "bg-rose-100 text-rose-700",     icon: "text-rose-500",   hover: "group-hover:text-rose-600" },
+  ai:               { badge: "bg-purple-100 text-purple-700", icon: "text-purple-500", hover: "group-hover:text-purple-600" },
+  project:          { badge: "bg-blue-100 text-blue-700",     icon: "text-blue-500",   hover: "group-hover:text-blue-600" },
+  til:              { badge: "bg-orange-100 text-orange-700",  icon: "text-orange-500", hover: "group-hover:text-orange-600" },
+};
+
+const DEFAULT_COLORS = { badge: "bg-gray-100 text-gray-700", icon: "text-gray-500", hover: "group-hover:text-gray-600" };
+
+export function getCategoryColors(slug: string) {
+  return CATEGORY_COLORS[slug] ?? DEFAULT_COLORS;
+}
+
 export const CATEGORIES: CategoryInfo[] = [
   {
     slug: "js",

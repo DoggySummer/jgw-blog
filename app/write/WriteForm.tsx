@@ -115,11 +115,16 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
             <div className="mb-1 text-xs text-gray-400">미리보기</div>
             <div className="h-[calc(24lh+1.5rem)] overflow-y-auto rounded-lg border border-gray-200 bg-gray-50 px-5 py-4">
               {content ? (
-                <article className="prose prose-sm max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
+                <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
                     components={{
                       code: CodeBlock,
+                      h1: ({ children }) => (
+                        <h1 className="prose-h1-underline">
+                          <span>{children}</span>
+                        </h1>
+                      ),
                       div: ({ node, children, ...props }) => {
                         const calloutType = (props as Record<string, unknown>)["data-callout"] as string | undefined;
                         if (calloutType) {

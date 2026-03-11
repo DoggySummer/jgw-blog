@@ -62,14 +62,14 @@ export default async function PostPage({
 
       <TableOfContents items={tocItems} />
 
-      <article className="prose prose-sm max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
+      <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
           components={{
             code: CodeBlock,
             h1: ({ children }) => (
-              <h1 id={slugify(extractText(children))} className="scroll-mt-20">
-                {children}
+              <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
+                <span>{children}</span>
               </h1>
             ),
             h2: ({ children }) => (

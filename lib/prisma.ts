@@ -14,7 +14,9 @@ function createPrismaClient() {
     database: url.pathname.replace("/", ""),
     connectionLimit: 5,
     connectTimeout: 30000,
+    acquireTimeout: 30000,
     idleTimeout: 60000,
+    minimumIdle: 1,
   });
 
   return new PrismaClient({ adapter });

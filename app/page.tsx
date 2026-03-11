@@ -23,7 +23,7 @@ export default function Home() {
             글 작성하기
           </Link>
           <Link
-            href="https://github.com"
+            href="https://github.com/DoggySummer/jgw-blog"
             target="_blank"
             className="rounded-full border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
           >

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, getCategoryColors } from "@/lib/categories";
 import { getPostsByCategory } from "@/lib/actions/posts";
 
 export default async function CategoryPage({
@@ -15,13 +15,14 @@ export default async function CategoryPage({
 
   const posts = await getPostsByCategory(category);
   const Icon = categoryInfo.icon;
+  const colors = getCategoryColors(category);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
       {/* Header */}
       <div className="mb-10">
         <div className="mb-3 flex items-center gap-3">
-          <Icon size={28} className="text-orange-500" />
+          <Icon size={28} className={colors.icon} />
           <h1 className="text-3xl font-bold">{categoryInfo.name}</h1>
         </div>
         <p className="text-gray-500">{categoryInfo.description}</p>
@@ -41,7 +42,7 @@ export default async function CategoryPage({
                 href={`/${category}/${post.id}`}
                 className="group block rounded-xl border border-gray-200 bg-white p-6 transition-shadow hover:shadow-md"
               >
-                <h2 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                <h2 className={`text-lg font-semibold text-gray-900 ${colors.hover} transition-colors`}>
                   {post.title}
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-gray-500 line-clamp-2">
