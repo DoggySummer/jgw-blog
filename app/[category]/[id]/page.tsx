@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkDirective from "remark-directive";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import { auth } from "@/auth";
 import remarkCallout from "@/lib/remarkCallout";
 import { getPostById } from "@/lib/actions/posts";
 import { CATEGORIES } from "@/lib/categories";
@@ -11,6 +14,24 @@ import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
 import TableOfContents from "@/components/TableOfContents";
+import PostAdminActions from "@/components/PostAdminActions";
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    img: [
+      ...(defaultSchema.attributes?.img ?? []),
+      "src",
+      "alt",
+      "title",
+      "width",
+      "height",
+      "loading",
+      "decoding",
+    ],
+  },
+};
 
 function extractText(children: React.ReactNode): string {
   if (typeof children === "string") return children;
@@ -38,6 +59,8 @@ export default async function PostPage({
 
   const categoryInfo = CATEGORIES.find((c) => c.slug === category);
   const tocItems = parseHeadings(post.content);
+  const session = await auth();
+  const isAdmin = session?.user?.email === process.env.ALLOWED_EMAIL;
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -59,6 +82,10 @@ export default async function PostPage({
         <time>{post.createdAt.toLocaleDateString("ko-KR")}</time>
       </div>
 
+      {isAdmin && (
+        <PostAdminActions postId={post.id} categorySlug={post.category?.slug ?? category} />
+      )}
+
       <hr className="my-8 border-gray-200" />
 
       <TableOfContents items={tocItems} />
@@ -66,6 +93,7 @@ export default async function PostPage({
       <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
+          rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
           components={{
             code: CodeBlock,
             img: ({ src, alt, ...props }) => (

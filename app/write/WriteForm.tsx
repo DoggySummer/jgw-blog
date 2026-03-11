@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkDirective from "remark-directive";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkCallout from "@/lib/remarkCallout";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
-import { createPost } from "@/lib/actions/posts";
+import { createPost, updatePost } from "@/lib/actions/posts";
 import { uploadImage } from "@/lib/actions/upload";
 import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 
@@ -17,6 +19,56 @@ type Category = {
   name: string;
   slug: string;
 };
+
+type WriteFormInitial = {
+  postId: number;
+  title: string;
+  content: string;
+  categoryId: string;
+  published: boolean;
+};
+
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    img: [
+      ...(defaultSchema.attributes?.img ?? []),
+      "src",
+      "alt",
+      "title",
+      "width",
+      "height",
+      "loading",
+      "decoding",
+    ],
+  },
+};
+
+function formatYyyyMmDd(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getTilTemplate() {
+  const today = formatYyyyMmDd(new Date());
+  return `# ${today} TIL
+
+## 📌 오늘 배운 것
+- 
+
+## ❓ 문제 상황
+- 
+
+## 🔎 원인
+- 
+
+## 🛠 해결 방법
+- 
+`;
+}
 
 function insertAtCursor(
   content: string,
@@ -27,12 +79,18 @@ function insertAtCursor(
   return content.slice(0, cursorStart) + insert + content.slice(cursorEnd);
 }
 
-export default function WriteForm({ categories }: { categories: Category[] }) {
+export default function WriteForm({
+  categories,
+  initial,
+}: {
+  categories: Category[];
+  initial?: WriteFormInitial;
+}) {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [content, setContent] = useState("");
-  const [published, setPublished] = useState(false);
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
+  const [content, setContent] = useState(initial?.content ?? "");
+  const [published] = useState(initial?.published ?? true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -46,21 +104,30 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
     setError("");
     setSubmitting(true);
 
-    const formData = new FormData();
-    formData.set("title", title);
-    formData.set("content", content);
-    formData.set("categoryId", categoryId);
-    if (published) formData.set("published", "on");
+    try {
+      const formData = new FormData();
+      formData.set("title", title);
+      formData.set("content", content);
+      formData.set("categoryId", categoryId);
+      if (published) formData.set("published", "on");
 
-    const result = await createPost(formData);
+      const result = initial?.postId
+        ? await updatePost(initial.postId, formData)
+        : await createPost(formData);
 
-    if (result.error) {
-      setError(result.error);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      const nextUrl = result.categorySlug ? `/${result.categorySlug}/${result.postId}` : "/";
+      router.push(nextUrl);
+    } catch (err) {
+      console.error(err);
+      setError("저장 중 오류가 발생했습니다.");
+    } finally {
       setSubmitting(false);
-      return;
     }
-
-    router.push(result.categorySlug ? `/${result.categorySlug}/${result.postId}` : "/");
   }
 
   return (
@@ -95,7 +162,17 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
         <select
           id="category"
           value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
+          onChange={(e) => {
+            const nextCategoryId = e.target.value;
+            setCategoryId(nextCategoryId);
+
+            // TIL 선택 시, 본문이 비어있고 새 글 작성일 때만 템플릿 자동 입력
+            const selected = categories.find((c) => String(c.id) === nextCategoryId);
+            if (!initial?.postId && selected?.slug === "til" && content.trim() === "") {
+              setContent(getTilTemplate());
+              setTitle((prev) => prev.trim() || `${formatYyyyMmDd(new Date())} TIL`);
+            }
+          }}
           className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
         >
           <option value="">카테고리 선택 (선택사항)</option>
@@ -208,6 +285,7 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
                 <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
+                    rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
                     components={{
                       code: CodeBlock,
                       img: ({ src, alt, ...props }) => (
@@ -238,20 +316,6 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* 발행 여부 */}
-      <div className="flex items-center gap-2">
-        <input
-          id="published"
-          type="checkbox"
-          checked={published}
-          onChange={(e) => setPublished(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 accent-orange-500"
-        />
-        <label htmlFor="published" className="text-sm font-medium text-gray-700">
-          공개로 설정
-        </label>
       </div>
 
       {/* 제출 */}

@@ -94,6 +94,14 @@
   font-family: "Paperlogy", sans-serif;
 }
 
+.prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  display: block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100%;
+  height: auto;
+}
+
 body {
   font-family: "Paperlogy", sans-serif;
   color: #1a1a1a;
