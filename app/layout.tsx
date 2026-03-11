@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { auth } from "@/auth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -29,18 +30,19 @@ const jalnan2 = localFont({
 export const metadata: Metadata = {
   title: "정길웅의 블로그",
   description:
-    "JavaScript, React, CS, HTML/CSS, 자료구조, 회고록을 기록하는 기술 블로그",
+    "JavaScript, React, CS, HTML/CSS, 회고록을 기록하는 기술 블로그",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="ko" className={`${paperlogy.variable} ${jalnan2.variable}`}>
       <body>
-        <Navbar />
+        <Navbar session={session} />
         <main className="min-h-[calc(100vh-8rem)]">{children}</main>
         <Footer />
       </body>

@@ -4,7 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { CATEGORIES } from "@/lib/categories";
 
-export default function Navbar() {
+type Props = { session?: { user?: unknown } | null };
+
+export default function Navbar({ session }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -26,6 +28,25 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {session ? (
+            <li>
+              <Link
+                href="/api/auth/signout"
+                className="transition-colors hover:text-gray-900"
+              >
+                로그아웃
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link
+                href="/api/auth/signin"
+                className="transition-colors hover:text-gray-900"
+              >
+                로그인
+              </Link>
+            </li>
+          )}
         </ul>
 
         {/* Mobile toggle */}
@@ -60,6 +81,27 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          {session ? (
+            <li>
+              <Link
+                href="/api/auth/signout"
+                onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              >
+                로그아웃
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link
+                href="/api/auth/signin"
+                onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
+              >
+                로그인
+              </Link>
+            </li>
+          )}
         </ul>
       )}
     </header>

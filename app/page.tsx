@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { auth } from "@/auth";
 import { CATEGORIES } from "@/lib/categories";
 import CategoryCard from "@/components/CategoryCard";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
   return (
     <>
       {/* Hero */}
@@ -16,12 +18,14 @@ export default function Home() {
           JavaScript, React, CS 기초부터 자료구조까지
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/write"
-            className="rounded-full bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
-          >
-            글 작성하기
-          </Link>
+          {session && (
+            <Link
+              href="/write"
+              className="rounded-full bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-600"
+            >
+              글 작성하기
+            </Link>
+          )}
           <Link
             href="https://github.com/DoggySummer/jgw-blog"
             target="_blank"
