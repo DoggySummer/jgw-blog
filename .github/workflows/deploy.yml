@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: SSH deploy (pull, ci, build)
-      - uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.DROPLET_HOST }}
           username: ${{ secrets.DROPLET_USER }}
