@@ -7,6 +7,7 @@ import remarkCallout from "@/lib/remarkCallout";
 import { getPostById } from "@/lib/actions/posts";
 import { CATEGORIES } from "@/lib/categories";
 import { parseHeadings, slugify } from "@/lib/parseHeadings";
+import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
 import TableOfContents from "@/components/TableOfContents";
@@ -67,6 +68,9 @@ export default async function PostPage({
           remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
           components={{
             code: CodeBlock,
+            img: ({ src, alt, ...props }) => (
+              <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
+            ),
             h1: ({ children }) => (
               <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
                 <span>{children}</span>

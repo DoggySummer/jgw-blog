@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -9,12 +9,23 @@ import remarkCallout from "@/lib/remarkCallout";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
 import { createPost } from "@/lib/actions/posts";
+import { uploadImage } from "@/lib/actions/upload";
+import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 
 type Category = {
   id: number;
   name: string;
   slug: string;
 };
+
+function insertAtCursor(
+  content: string,
+  insert: string,
+  cursorStart: number,
+  cursorEnd: number
+): string {
+  return content.slice(0, cursorStart) + insert + content.slice(cursorEnd);
+}
 
 export default function WriteForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
@@ -24,6 +35,11 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
   const [published, setPublished] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cursorPosRef = useRef({ start: 0, end: 0 });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -99,10 +115,84 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* 에디터 */}
           <div>
-            <div className="mb-1 text-xs text-gray-400">작성</div>
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-xs text-gray-400">작성</span>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const f = e.target.files?.[0];
+                    e.target.value = "";
+                    if (!f) return;
+                    setUploadError("");
+                    setUploading(true);
+                    const formData = new FormData();
+                    formData.set("file", f);
+                    const result = await uploadImage(formData);
+                    setUploading(false);
+                    if ("error" in result) {
+                      setUploadError(result.error);
+                      return;
+                    }
+                    const { start, end } = cursorPosRef.current;
+                    const insert = `\n![이미지](${result.url})\n`;
+                    setContent((prev) => insertAtCursor(prev, insert, start, end));
+                  }}
+                />
+                <button
+                  type="button"
+                  disabled={uploading}
+                  onClick={() => {
+                    const t = textareaRef.current;
+                    if (t) cursorPosRef.current = { start: t.selectionStart, end: t.selectionEnd };
+                    fileInputRef.current?.click();
+                  }}
+                  className="rounded border border-gray-300 bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {uploading ? "업로드 중…" : "이미지 삽입"}
+                </button>
+              </div>
+            </div>
+            {uploadError && (
+              <p className="mb-1 text-xs text-red-600">{uploadError}</p>
+            )}
             <textarea
+              ref={textareaRef}
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              onKeyUp={() => {
+                const t = textareaRef.current;
+                if (t) cursorPosRef.current = { start: t.selectionStart, end: t.selectionEnd };
+              }}
+              onMouseUp={() => {
+                const t = textareaRef.current;
+                if (t) cursorPosRef.current = { start: t.selectionStart, end: t.selectionEnd };
+              }}
+              onPaste={async (e) => {
+                const item = e.clipboardData?.items?.[0];
+                if (!item || !item.type.startsWith("image/")) return;
+                e.preventDefault();
+                const file = item.getAsFile();
+                if (!file) return;
+                setUploadError("");
+                setUploading(true);
+                const formData = new FormData();
+                formData.set("file", file);
+                const result = await uploadImage(formData);
+                setUploading(false);
+                if ("error" in result) {
+                  setUploadError(result.error);
+                  return;
+                }
+                const t = textareaRef.current;
+                const start = t?.selectionStart ?? content.length;
+                const end = t?.selectionEnd ?? content.length;
+                const insert = `\n![이미지](${result.url})\n`;
+                setContent((prev) => insertAtCursor(prev, insert, start, end));
+              }}
               placeholder={"# 제목\n\n본문을 마크다운으로 작성하세요...\n\n## 소제목\n\n- 목록\n- 항목\n\n**굵은 글씨**\n\n> 인용문\n\n```js\nconst x = 1;\n```"}
               required
               rows={24}
@@ -120,6 +210,9 @@ export default function WriteForm({ categories }: { categories: Category[] }) {
                     remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
                     components={{
                       code: CodeBlock,
+                      img: ({ src, alt, ...props }) => (
+                        <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
+                      ),
                       h1: ({ children }) => (
                         <h1 className="prose-h1-underline">
                           <span>{children}</span>
