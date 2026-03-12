@@ -23,6 +23,8 @@ type Category = {
 type WriteFormInitial = {
   postId: number;
   title: string;
+  description: string;
+  thumbnail: string;
   content: string;
   categoryId: string;
   published: boolean;
@@ -88,15 +90,19 @@ export default function WriteForm({
 }) {
   const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? "");
+  const [description, setDescription] = useState(initial?.description ?? "");
+  const [thumbnail, setThumbnail] = useState(initial?.thumbnail ?? "");
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
   const [content, setContent] = useState(initial?.content ?? "");
   const [published] = useState(initial?.published ?? true);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [thumbnailUploading, setThumbnailUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const cursorPosRef = useRef({ start: 0, end: 0 });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -107,6 +113,8 @@ export default function WriteForm({
     try {
       const formData = new FormData();
       formData.set("title", title);
+      if (description) formData.set("description", description);
+      if (thumbnail) formData.set("thumbnail", thumbnail);
       formData.set("content", content);
       formData.set("categoryId", categoryId);
       if (published) formData.set("published", "on");
@@ -152,6 +160,83 @@ export default function WriteForm({
           required
           className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
         />
+      </div>
+
+      {/* 상세 설명 */}
+      <div>
+        <label htmlFor="description" className="mb-1 block text-sm font-medium text-gray-700">
+          상세 설명 (선택)
+        </label>
+        <textarea
+          id="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="카테고리 목록에 노출될 짧은 설명을 입력하세요. 비우면 본문 요약이 표시됩니다."
+          rows={2}
+          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+        />
+      </div>
+
+      {/* 썸네일 */}
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          썸네일 (선택)
+        </label>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            ref={thumbnailInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            className="hidden"
+            onChange={async (e) => {
+              const f = e.target.files?.[0];
+              e.target.value = "";
+              if (!f) return;
+              setUploadError("");
+              setThumbnailUploading(true);
+              const formData = new FormData();
+              formData.set("file", f);
+              const result = await uploadImage(formData);
+              setThumbnailUploading(false);
+              if ("error" in result) {
+                setUploadError(result.error);
+                return;
+              }
+              setThumbnail(result.url);
+            }}
+          />
+          <input
+            type="url"
+            value={thumbnail}
+            onChange={(e) => setThumbnail(e.target.value)}
+            placeholder="썸네일 이미지 URL (또는 아래 버튼으로 업로드)"
+            className="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+          />
+          <button
+            type="button"
+            disabled={thumbnailUploading}
+            onClick={() => thumbnailInputRef.current?.click()}
+            className="shrink-0 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-50"
+          >
+            {thumbnailUploading ? "업로드 중…" : "이미지 업로드"}
+          </button>
+        </div>
+        {thumbnail && (
+          <div className="mt-2">
+            <p className="mb-1.5 text-xs text-gray-500">미리보기</p>
+            <div className="relative aspect-video w-full max-w-sm overflow-hidden rounded-lg border border-gray-200 bg-gray-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={thumbnail}
+                alt="썸네일 미리보기"
+                className="h-full w-full object-cover object-center"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 카테고리 */}

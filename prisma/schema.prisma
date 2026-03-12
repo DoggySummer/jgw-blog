@@ -16,12 +16,14 @@ model Category {
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
-  title      String
-  content    String   @db.LongText
-  categoryId Int?
-  category   Category? @relation(fields: [categoryId], references: [id])
-  published  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  thumbnail   String?  @db.VarChar(500)
+  content     String   @db.LongText
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

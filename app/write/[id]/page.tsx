@@ -31,6 +31,8 @@ export default async function EditPage({
         initial={{
           postId: post.id,
           title: post.title,
+          description: post.description ?? "",
+          thumbnail: post.thumbnail ?? "",
           content: post.content,
           categoryId: post.categoryId == null ? "" : String(post.categoryId),
           published: post.published,

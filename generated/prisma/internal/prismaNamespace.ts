@@ -589,6 +589,8 @@ export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typ
 export const PostScalarFieldEnum = {
   id: 'id',
   title: 'title',
+  description: 'description',
+  thumbnail: 'thumbnail',
   content: 'content',
   categoryId: 'categoryId',
   published: 'published',
@@ -625,6 +627,8 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 export const PostOrderByRelevanceFieldEnum = {
   title: 'title',
+  description: 'description',
+  thumbnail: 'thumbnail',
   content: 'content'
 } as const
 

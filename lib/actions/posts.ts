@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache";
 export type PostWithCategory = {
   id: number;
   title: string;
+  description: string | null;
+  thumbnail: string | null;
   content: string;
   categoryId: number | null;
   published: boolean;
@@ -22,6 +24,8 @@ export type PostWithCategory = {
 
 export async function createPost(formData: FormData) {
   const title = formData.get("title") as string;
+  const description = (formData.get("description") as string) || null;
+  const thumbnail = (formData.get("thumbnail") as string) || null;
   const content = formData.get("content") as string;
   const categoryId = formData.get("categoryId") as string;
   const published = formData.get("published") === "on";
@@ -33,6 +37,8 @@ export async function createPost(formData: FormData) {
   const post = await prisma.post.create({
     data: {
       title,
+      description: description || undefined,
+      thumbnail: thumbnail || undefined,
       content,
       categoryId: categoryId ? parseInt(categoryId, 10) : null,
       published,
@@ -100,6 +106,8 @@ export async function updatePost(postId: number, formData: FormData) {
   if (!requireAdminEmail(session)) return { error: "권한이 없습니다." };
 
   const title = formData.get("title") as string;
+  const description = (formData.get("description") as string) || null;
+  const thumbnail = (formData.get("thumbnail") as string) || null;
   const content = formData.get("content") as string;
   const categoryId = formData.get("categoryId") as string;
   const published = formData.get("published") === "on";
@@ -112,6 +120,8 @@ export async function updatePost(postId: number, formData: FormData) {
     where: { id: postId },
     data: {
       title,
+      description: description || undefined,
+      thumbnail: thumbnail || undefined,
       content,
       categoryId: categoryId ? parseInt(categoryId, 10) : null,
       published,
