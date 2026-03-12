@@ -27,10 +27,24 @@ const jalnan2 = localFont({
   variable: "--font-jalnan2",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://frontend-blog.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "정길웅의 블로그",
   description:
     "JavaScript, React, CS, HTML/CSS, 회고록을 기록하는 기술 블로그",
+  openGraph: {
+    title: "정길웅의 블로그",
+    description: "JavaScript, React, CS, HTML/CSS, 회고록을 기록하는 기술 블로그",
+    images: ["/image/blogImage.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "정길웅의 블로그",
+    description: "JavaScript, React, CS, HTML/CSS, 회고록을 기록하는 기술 블로그",
+    images: ["/image/blogImage.png"],
+  },
 };
 
 export default async function RootLayout({

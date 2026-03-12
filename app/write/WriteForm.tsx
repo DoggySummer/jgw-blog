@@ -92,7 +92,9 @@ export default function WriteForm({
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
   const [thumbnail, setThumbnail] = useState(initial?.thumbnail ?? "");
-  const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
+  const [categoryId, setCategoryId] = useState(
+    initial?.categoryId != null && String(initial.categoryId).trim() !== "" ? String(initial.categoryId) : "1"
+  );
   const [content, setContent] = useState(initial?.content ?? "");
   const [published] = useState(initial?.published ?? true);
   const [error, setError] = useState("");
@@ -108,6 +110,10 @@ export default function WriteForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (!categoryId?.trim()) {
+      setError("카테고리를 선택해 주세요.");
+      return;
+    }
     setSubmitting(true);
 
     try {
@@ -247,6 +253,7 @@ export default function WriteForm({
         <select
           id="category"
           value={categoryId}
+          required
           onChange={(e) => {
             const nextCategoryId = e.target.value;
             setCategoryId(nextCategoryId);
@@ -260,7 +267,6 @@ export default function WriteForm({
           }}
           className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none transition-colors focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
         >
-          <option value="">카테고리 선택 (선택사항)</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
