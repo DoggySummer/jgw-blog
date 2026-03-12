@@ -28,22 +28,13 @@ export default function Navbar({ session }: Props) {
               </Link>
             </li>
           ))}
-          {session ? (
+          {session && (
             <li>
               <Link
                 href="/api/auth/signout"
                 className="transition-colors hover:text-gray-900"
               >
                 로그아웃
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link
-                href="/api/auth/signin"
-                className="transition-colors hover:text-gray-900"
-              >
-                로그인
               </Link>
             </li>
           )}
@@ -81,7 +72,7 @@ export default function Navbar({ session }: Props) {
               </Link>
             </li>
           ))}
-          {session ? (
+          {session && (
             <li>
               <Link
                 href="/api/auth/signout"
@@ -89,16 +80,6 @@ export default function Navbar({ session }: Props) {
                 className="block py-2.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
               >
                 로그아웃
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link
-                href="/api/auth/signin"
-                onClick={() => setMenuOpen(false)}
-                className="block py-2.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
-              >
-                로그인
               </Link>
             </li>
           )}

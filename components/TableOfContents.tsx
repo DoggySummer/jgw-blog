@@ -19,7 +19,7 @@ export default function TableOfContents({ items }: { items: TocItem[] }) {
               href={`#${item.slug}`}
               className={`flex items-center gap-2 py-2.5 text-sm transition-colors hover:opacity-70 ${
                 item.level === 1
-                  ? "bg-orange-50 px-4 font-medium text-gray-800"
+                  ? "bg-white px-4 font-medium text-gray-800"
                   : "bg-white pl-10 pr-4 text-gray-500"
               }`}
             >
