@@ -89,6 +89,7 @@ export default function WriteForm({
   categories: Category[];
   initial?: WriteFormInitial;
 }) {
+  let firstHeadingRendered = false;
   const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
@@ -383,14 +384,27 @@ export default function WriteForm({
                       img: ({ src, alt, ...props }) => (
                         <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
                       ),
-                      h1: ({ children }) => (
-                        <>
-                          <br />
-                          <h1 className="prose-h1-underline">
-                            <span>{children}</span>
-                          </h1>
-                        </>
-                      ),
+                      h1: ({ children }) => {
+                        const isFirst = !firstHeadingRendered;
+                        firstHeadingRendered = true;
+
+                        if (isFirst) {
+                          return (
+                            <h1 className="prose-h1-underline">
+                              <span>{children}</span>
+                            </h1>
+                          );
+                        }
+
+                        return (
+                          <>
+                            <br />
+                            <h1 className="prose-h1-underline">
+                              <span>{children}</span>
+                            </h1>
+                          </>
+                        );
+                      },
                       div: ({ node, children, ...props }) => {
                         const calloutType = (props as Record<string, unknown>)["data-callout"] as string | undefined;
                         if (calloutType) {
