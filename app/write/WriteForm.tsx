@@ -385,10 +385,10 @@ export default function WriteForm({
                       ),
                       h1: ({ children }) => (
                         <>
+                          <br />
                           <h1 className="prose-h1-underline">
                             <span>{children}</span>
                           </h1>
-                          <br />
                         </>
                       ),
                       div: ({ node, children, ...props }) => {
