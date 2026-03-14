@@ -11,6 +11,7 @@ import { getPostById } from "@/lib/actions/posts";
 import { CATEGORIES } from "@/lib/categories";
 import { parseHeadings, slugify } from "@/lib/parseHeadings";
 import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
+import { transformListLabelBold } from "@/lib/transformListLabelBold";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
 import TableOfContents from "@/components/TableOfContents";
@@ -100,9 +101,12 @@ export default async function PostPage({
               <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
             ),
             h1: ({ children }) => (
-              <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
-                <span>{children}</span>
-              </h1>
+              <>
+                <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
+                  <span>{children}</span>
+                </h1>
+                <br />
+              </>
             ),
             h2: ({ children }) => (
               <h2 id={slugify(extractText(children))} className="scroll-mt-20">
@@ -120,7 +124,7 @@ export default async function PostPage({
             },
           }}
         >
-          {post.content}
+          {transformListLabelBold(post.content)}
         </ReactMarkdown>
       </article>
     </div>

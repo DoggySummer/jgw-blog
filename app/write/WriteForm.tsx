@@ -13,6 +13,7 @@ import Callout from "@/components/Callout";
 import { createPost, updatePost } from "@/lib/actions/posts";
 import { uploadImage } from "@/lib/actions/upload";
 import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
+import { transformListLabelBold } from "@/lib/transformListLabelBold";
 
 type Category = {
   id: number;
@@ -383,9 +384,12 @@ export default function WriteForm({
                         <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
                       ),
                       h1: ({ children }) => (
-                        <h1 className="prose-h1-underline">
-                          <span>{children}</span>
-                        </h1>
+                        <>
+                          <h1 className="prose-h1-underline">
+                            <span>{children}</span>
+                          </h1>
+                          <br />
+                        </>
                       ),
                       div: ({ node, children, ...props }) => {
                         const calloutType = (props as Record<string, unknown>)["data-callout"] as string | undefined;
@@ -396,7 +400,7 @@ export default function WriteForm({
                       },
                     }}
                   >
-                    {content}
+                    {transformListLabelBold(content)}
                   </ReactMarkdown>
                 </article>
               ) : (
