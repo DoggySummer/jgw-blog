@@ -14,6 +14,7 @@ import { createPost, updatePost } from "@/lib/actions/posts";
 import { uploadImage } from "@/lib/actions/upload";
 import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 import { transformListLabelBold } from "@/lib/transformListLabelBold";
+import rehypeBrBeforeH1 from "@/lib/rehypeBrBeforeH1";
 
 type Category = {
   id: number;
@@ -89,7 +90,6 @@ export default function WriteForm({
   categories: Category[];
   initial?: WriteFormInitial;
 }) {
-  let firstHeadingRendered = false;
   const router = useRouter();
   const [title, setTitle] = useState(initial?.title ?? "");
   const [description, setDescription] = useState(initial?.description ?? "");
@@ -378,33 +378,17 @@ export default function WriteForm({
                 <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
-                    rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+                    rehypePlugins={[rehypeRaw, rehypeBrBeforeH1, [rehypeSanitize, sanitizeSchema]]}
                     components={{
                       code: CodeBlock,
                       img: ({ src, alt, ...props }) => (
                         <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
                       ),
-                      h1: ({ children }) => {
-                        const isFirst = !firstHeadingRendered;
-                        firstHeadingRendered = true;
-
-                        if (isFirst) {
-                          return (
-                            <h1 className="prose-h1-underline">
-                              <span>{children}</span>
-                            </h1>
-                          );
-                        }
-
-                        return (
-                          <>
-                            <br />
-                            <h1 className="prose-h1-underline">
-                              <span>{children}</span>
-                            </h1>
-                          </>
-                        );
-                      },
+                      h1: ({ children }) => (
+                        <h1 className="prose-h1-underline">
+                          <span>{children}</span>
+                        </h1>
+                      ),
                       div: ({ node, children, ...props }) => {
                         const calloutType = (props as Record<string, unknown>)["data-callout"] as string | undefined;
                         if (calloutType) {

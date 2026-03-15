@@ -12,6 +12,7 @@ import { CATEGORIES } from "@/lib/categories";
 import { parseHeadings, slugify } from "@/lib/parseHeadings";
 import { fixSpacesImageUrl } from "@/lib/fixSpacesImageUrl";
 import { transformListLabelBold } from "@/lib/transformListLabelBold";
+import rehypeBrBeforeH1 from "@/lib/rehypeBrBeforeH1";
 import CodeBlock from "@/components/CodeBlock";
 import Callout from "@/components/Callout";
 import TableOfContents from "@/components/TableOfContents";
@@ -94,19 +95,16 @@ export default async function PostPage({
       <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
-          rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+          rehypePlugins={[rehypeRaw, rehypeBrBeforeH1, [rehypeSanitize, sanitizeSchema]]}
           components={{
             code: CodeBlock,
             img: ({ src, alt, ...props }) => (
               <img src={fixSpacesImageUrl(src)} alt={alt ?? ""} {...props} />
             ),
             h1: ({ children }) => (
-              <>
-                <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
-                  <span>{children}</span>
-                </h1>
-                <br />
-              </>
+              <h1 id={slugify(extractText(children))} className="scroll-mt-20 prose-h1-underline">
+                <span>{children}</span>
+              </h1>
             ),
             h2: ({ children }) => (
               <h2 id={slugify(extractText(children))} className="scroll-mt-20">
