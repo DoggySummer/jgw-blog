@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkDirective from "remark-directive";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeBrBeforeH1 from "@/lib/rehypeBrBeforeH1";
 import { auth } from "@/auth";
 import remarkCallout from "@/lib/remarkCallout";
 import { getPostById } from "@/lib/actions/posts";
@@ -94,7 +95,7 @@ export default async function PostPage({
       <article className="prose prose-sm max-w-none prose-headings:font-normal prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-a:text-orange-600 prose-blockquote:border-l-orange-300 prose-blockquote:not-italic prose-pre:bg-transparent prose-pre:p-0 [&_blockquote>p]:before:content-none [&_blockquote>p]:after:content-none">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkDirective, remarkCallout]}
-          rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+          rehypePlugins={[rehypeRaw, rehypeBrBeforeH1, [rehypeSanitize, sanitizeSchema]]}
           components={{
             code: CodeBlock,
             img: ({ src, alt, ...props }) => (
