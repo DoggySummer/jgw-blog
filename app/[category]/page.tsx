@@ -135,11 +135,6 @@ export default async function CategoryPage({
         ) : (
           /* ── 빈 상태 ── */
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-16 text-center">
-            <div
-              className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl ${colors.badge}`}
-            >
-              <Icon size={32} strokeWidth={1.5} />
-            </div>
             <p className="mt-5 text-lg font-semibold text-gray-700">
               아직 작성된 글이 없습니다
             </p>

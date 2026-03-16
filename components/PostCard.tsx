@@ -82,7 +82,7 @@ export default function PostCard({
             style={{ objectPosition: "50% 30%" }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center">
+          <div className="flex h-full items-center justify-center bg-gray-100">
             <svg
               className="h-10 w-10 text-gray-300"
               viewBox="0 0 24 24"
