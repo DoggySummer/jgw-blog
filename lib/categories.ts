@@ -1,72 +1,129 @@
-import type { IconType } from "react-icons";
-import { SiJavascript, SiReact } from "react-icons/si";
-import { FaLaptopCode, FaRobot, FaPenFancy, FaFolderOpen, FaBook } from "react-icons/fa";
+import {
+  Braces,
+  Atom,
+  Cpu,
+  BrainCircuit,
+  FolderGit2,
+  Lightbulb,
+  BookOpenText,
+  type LucideIcon,
+} from "lucide-react";
 
-export type CategoryInfo = {
+export interface CategoryInfo {
   slug: string;
   name: string;
   description: string;
-  icon: IconType;
-};
-
-export const CATEGORY_COLORS: Record<string, { badge: string; icon: string; hover: string }> = {
-  js:               { badge: "bg-yellow-100 text-yellow-700", icon: "text-yellow-500", hover: "group-hover:text-yellow-600" },
-  react:            { badge: "bg-sky-100 text-sky-700",       icon: "text-sky-500",    hover: "group-hover:text-sky-600" },
-  cs:               { badge: "bg-green-100 text-green-700",   icon: "text-green-500",  hover: "group-hover:text-green-600" },
-  retrospect:       { badge: "bg-rose-100 text-rose-700",     icon: "text-rose-500",   hover: "group-hover:text-rose-600" },
-  ai:               { badge: "bg-purple-100 text-purple-700", icon: "text-purple-500", hover: "group-hover:text-purple-600" },
-  project:          { badge: "bg-blue-100 text-blue-700",     icon: "text-blue-500",   hover: "group-hover:text-blue-600" },
-  til:              { badge: "bg-orange-100 text-orange-700",  icon: "text-orange-500", hover: "group-hover:text-orange-600" },
-};
-
-const DEFAULT_COLORS = { badge: "bg-gray-100 text-gray-700", icon: "text-gray-500", hover: "group-hover:text-gray-600" };
-
-export function getCategoryColors(slug: string) {
-  return CATEGORY_COLORS[slug] ?? DEFAULT_COLORS;
+  icon: LucideIcon;
 }
 
 export const CATEGORIES: CategoryInfo[] = [
   {
     slug: "js",
     name: "JavaScript",
-    description:
-      "변수, 클로저, 프로토타입, 비동기 프로그래밍 등 JavaScript 핵심 개념",
-    icon: SiJavascript,
+    description: "변수, 클로저, 프로토타입, 비동기 프로그래밍 등 JavaScript 핵심 개념",
+    icon: Braces,
   },
   {
     slug: "react",
     name: "React",
     description: "Hooks, 상태 관리, Next.js 등 React 생태계",
-    icon: SiReact,
+    icon: Atom,
   },
   {
     slug: "cs",
     name: "Computer Science",
     description: "네트워크, HTTP, OS, 프로세스/스레드 등 CS 기초",
-    icon: FaLaptopCode,
+    icon: Cpu,
   },
   {
     slug: "ai",
     name: "AI",
     description: "머신러닝, 딥러닝, LLM, 프롬프트 엔지니어링 등 인공지능 기술",
-    icon: FaRobot,
+    icon: BrainCircuit,
   },
   {
     slug: "project",
     name: "Project",
     description: "사이드 프로젝트, 포트폴리오, 개발 경험 정리",
-    icon: FaFolderOpen,
+    icon: FolderGit2,
   },
   {
     slug: "til",
     name: "TIL",
     description: "Today I Learned, 매일 배운 것을 짧게 기록",
-    icon: FaBook,
+    icon: Lightbulb,
   },
   {
     slug: "retrospect",
     name: "회고록",
     description: "프로젝트 회고, 학습 기록, 개인 성장 기록",
-    icon: FaPenFancy,
+    icon: BookOpenText,
   },
 ];
+
+/*
+ * 카테고리별 색상 시스템
+ *
+ * badge  : 아이콘 박스 배경 + 텍스트
+ * ring   : hover 시 카드 상단 테두리
+ * glow   : 아이콘 영역 배경 블러
+ * accent : 카테고리 라벨 텍스트
+ */
+const COLOR_MAP: Record<
+  string,
+  { badge: string; ring: string; accent: string; dot: string }
+> = {
+  js: {
+    badge: "bg-amber-50 text-amber-600",
+    ring: "group-hover:border-t-amber-400",
+    accent: "text-amber-600",
+    dot: "bg-amber-400",
+  },
+  react: {
+    badge: "bg-sky-50 text-sky-600",
+    ring: "group-hover:border-t-sky-400",
+    accent: "text-sky-600",
+    dot: "bg-sky-400",
+  },
+  cs: {
+    badge: "bg-violet-50 text-violet-600",
+    ring: "group-hover:border-t-violet-400",
+    accent: "text-violet-600",
+    dot: "bg-violet-400",
+  },
+  ai: {
+    badge: "bg-emerald-50 text-emerald-600",
+    ring: "group-hover:border-t-emerald-400",
+    accent: "text-emerald-600",
+    dot: "bg-emerald-400",
+  },
+  project: {
+    badge: "bg-orange-50 text-orange-600",
+    ring: "group-hover:border-t-orange-400",
+    accent: "text-orange-600",
+    dot: "bg-orange-400",
+  },
+  til: {
+    badge: "bg-pink-50 text-pink-600",
+    ring: "group-hover:border-t-pink-400",
+    accent: "text-pink-600",
+    dot: "bg-pink-400",
+  },
+  retrospect: {
+    badge: "bg-cyan-50 text-cyan-600",
+    ring: "group-hover:border-t-cyan-400",
+    accent: "text-cyan-600",
+    dot: "bg-cyan-400",
+  },
+};
+
+const FALLBACK = {
+  badge: "bg-gray-50 text-gray-600",
+  ring: "group-hover:border-t-gray-400",
+  accent: "text-gray-600",
+  dot: "bg-gray-400",
+};
+
+export function getCategoryColors(slug: string) {
+  return COLOR_MAP[slug] ?? FALLBACK;
+}
