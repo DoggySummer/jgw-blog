@@ -66,54 +66,70 @@ export const CATEGORIES: CategoryInfo[] = [
  *
  * badge  : 아이콘 박스 배경 + 텍스트
  * ring   : hover 시 카드 상단 테두리
- * glow   : 아이콘 영역 배경 블러
  * accent : 카테고리 라벨 텍스트
+ * dot    : 점 등
+ * icon   : 카테고리 헤더 아이콘 색
+ * hover  : 제목 링크 hover 색
  */
 const COLOR_MAP: Record<
   string,
-  { badge: string; ring: string; accent: string; dot: string }
+  { badge: string; ring: string; accent: string; dot: string; icon: string; hover: string }
 > = {
   js: {
     badge: "bg-amber-50 text-amber-600",
     ring: "group-hover:border-t-amber-400",
     accent: "text-amber-600",
     dot: "bg-amber-400",
+    icon: "text-amber-600",
+    hover: "group-hover:text-amber-600",
   },
   react: {
     badge: "bg-sky-50 text-sky-600",
     ring: "group-hover:border-t-sky-400",
     accent: "text-sky-600",
     dot: "bg-sky-400",
+    icon: "text-sky-600",
+    hover: "group-hover:text-sky-600",
   },
   cs: {
     badge: "bg-violet-50 text-violet-600",
     ring: "group-hover:border-t-violet-400",
     accent: "text-violet-600",
     dot: "bg-violet-400",
+    icon: "text-violet-600",
+    hover: "group-hover:text-violet-600",
   },
   ai: {
     badge: "bg-emerald-50 text-emerald-600",
     ring: "group-hover:border-t-emerald-400",
     accent: "text-emerald-600",
     dot: "bg-emerald-400",
+    icon: "text-emerald-600",
+    hover: "group-hover:text-emerald-600",
   },
   project: {
     badge: "bg-orange-50 text-orange-600",
     ring: "group-hover:border-t-orange-400",
     accent: "text-orange-600",
     dot: "bg-orange-400",
+    icon: "text-orange-600",
+    hover: "group-hover:text-orange-600",
   },
   til: {
     badge: "bg-pink-50 text-pink-600",
     ring: "group-hover:border-t-pink-400",
     accent: "text-pink-600",
     dot: "bg-pink-400",
+    icon: "text-pink-600",
+    hover: "group-hover:text-pink-600",
   },
   retrospect: {
     badge: "bg-cyan-50 text-cyan-600",
     ring: "group-hover:border-t-cyan-400",
     accent: "text-cyan-600",
     dot: "bg-cyan-400",
+    icon: "text-cyan-600",
+    hover: "group-hover:text-cyan-600",
   },
 };
 
@@ -122,6 +138,8 @@ const FALLBACK = {
   ring: "group-hover:border-t-gray-400",
   accent: "text-gray-600",
   dot: "bg-gray-400",
+  icon: "text-gray-600",
+  hover: "group-hover:text-gray-600",
 };
 
 export function getCategoryColors(slug: string) {
