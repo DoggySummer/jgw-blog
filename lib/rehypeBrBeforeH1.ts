@@ -21,7 +21,8 @@ const rehypeBrBeforeH1: Plugin = () => (tree) => {
       return;
     }
     if (parent && typeof index === "number") {
-      parent.children.splice(index, 0, { ...brNode });
+      const p = parent as { children: unknown[] };
+      p.children.splice(index, 0, { ...brNode });
     }
   });
 };
