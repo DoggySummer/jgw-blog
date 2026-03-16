@@ -40,16 +40,9 @@ export default function CategoryCard({ category, postCount }: CategoryCardProps)
 
       {/* title */}
       <h3
-        className={`mb-1.5 text-base font-semibold text-gray-900 transition-colors group-hover:${colors.accent.replace("text-", "text-")}`}
-        /* 
-         * group-hover 색상은 동적 클래스라 Tailwind이 퍼지할 수 있음
-         * 아래 style로 안전하게 처리
-         */
-        style={{}}
+        className={`mb-1.5 text-base font-semibold text-gray-900 transition-colors ${colors.hover}`}
       >
-        <span className="group-hover:text-orange-600 transition-colors">
-          {category.name}
-        </span>
+        <span>{category.name}</span>
       </h3>
 
       {/* description */}
@@ -58,7 +51,9 @@ export default function CategoryCard({ category, postCount }: CategoryCardProps)
       </p>
 
       {/* bottom arrow hint */}
-      <div className="mt-4 flex items-center text-xs font-medium text-gray-400 transition-colors group-hover:text-orange-500">
+      <div
+        className={`mt-4 flex items-center text-xs font-medium text-gray-400 transition-colors ${colors.hover}`}
+      >
         둘러보기
         <svg
           className="ml-1 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"

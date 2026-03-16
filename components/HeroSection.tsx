@@ -211,7 +211,7 @@ export default function HeroSection({ isLoggedIn }: { isLoggedIn: boolean }) {
           </h1>
 
           <p className="mt-4 text-lg leading-relaxed text-gray-500 md:text-xl">
-            JavaScript, React, CS 기초부터 자료구조까지.
+            JavaScript, React, CS 기초까지.
             <br />
             매일 성장하는 개발자의 기록.
           </p>

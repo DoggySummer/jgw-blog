@@ -34,7 +34,7 @@ export default function Navbar({ session }: Props) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
+      <nav className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4">
         {/* ── 로고 ── */}
         <Link href="/" className="shrink-0 text-lg font-bold whitespace-nowrap">
           정길웅의 블로그
@@ -44,11 +44,11 @@ export default function Navbar({ session }: Props) {
         <form onSubmit={handleSubmit} className="relative flex flex-1 justify-center">
           <div
             className={`
-              flex w-full max-w-md items-center gap-2.5 rounded-xl border px-3.5 py-2
+              flex w-full max-w-md items-center gap-2.5 rounded-xl border border-gray-200 px-3.5 py-2
               transition-all duration-200
               ${focused
-                ? "border-orange-300 bg-white shadow-sm shadow-orange-100"
-                : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                ? "bg-white shadow-sm shadow-orange-100 ring-1 ring-orange-200"
+                : "bg-gray-50 hover:border-gray-300"
               }
             `}
           >
