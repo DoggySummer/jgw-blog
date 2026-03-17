@@ -6,6 +6,7 @@ import {
   FolderGit2,
   Lightbulb,
   BookOpenText,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
 
@@ -46,6 +47,12 @@ export const CATEGORIES: CategoryInfo[] = [
     name: "Project",
     description: "사이드 프로젝트, 포트폴리오, 개발 경험 정리",
     icon: FolderGit2,
+  },
+  {
+    slug: "design",
+    name: "Design",
+    description: "UI/UX, 디자인 시스템, 피그마 등 디자인 관련",
+    icon: Palette,
   },
   {
     slug: "til",
@@ -114,6 +121,14 @@ const COLOR_MAP: Record<
     dot: "bg-orange-400",
     icon: "text-orange-600",
     hover: "group-hover:text-orange-600",
+  },
+  design: {
+    badge: "bg-teal-50 text-teal-600",
+    ring: "group-hover:border-t-teal-400",
+    accent: "text-teal-600",
+    dot: "bg-teal-400",
+    icon: "text-teal-600",
+    hover: "group-hover:text-teal-600",
   },
   til: {
     badge: "bg-pink-50 text-pink-600",

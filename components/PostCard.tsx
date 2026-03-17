@@ -53,6 +53,7 @@ export default function PostCard({
     cs: "group-hover:text-violet-600",
     ai: "group-hover:text-emerald-600",
     project: "group-hover:text-orange-600",
+    design: "group-hover:text-teal-600",
     til: "group-hover:text-pink-600",
     retrospect: "group-hover:text-cyan-600",
   };
